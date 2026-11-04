@@ -1,0 +1,4 @@
+| Model | Accuracy (%) | Test loss | Macro F1 | Harassment precision | Harassment recall | Harassment F1 |
+|---|---|---|---|---|---|---|
+| TimeSformer | 91.71 | 0.2063 | 0.916 | 0.961 | 0.859 | 0.907 |
+| VideoMAE | 91.71 | 0.2020 | 0.916 | 0.949 | 0.871 | 0.908 |

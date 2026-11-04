@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Big model weights (GitHub rejects files > 100 MB)
+outputs/*/best_model/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Dataset / videos (do not redistribute; get it from Zenodo)
+*.mp4
+*.avi
+*.mov
+*.mkv
+Sexual_Harassment_Dataset/
+data/
+
+# Editor / OS
+.vscode/
+.DS_Store
+
+# Secrets
+.env
+.env.*

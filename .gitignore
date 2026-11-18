@@ -19,6 +19,15 @@ outputs/*/best_model/
 Sexual_Harassment_Dataset/
 data/
 
+# Generated per-video visualizations and monitoring logs may contain
+# identifiable frames or video-derived predictions.
+outputs/explainability/
+outputs/monitor/
+emotion_features.csv
+emotion_probs.csv
+fusion_results.csv
+timesformer_probs.csv
+
 # Editor / OS
 .vscode/
 .DS_Store

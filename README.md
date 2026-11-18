@@ -41,6 +41,11 @@ The scratch CNN stays near chance, showing the value of pretraining on a small d
 | `train_transformers.py` | Fine-tune TimeSformer / VideoMAE (main script) |
 | `evaluate_saved.py` | Evaluate a saved model on the test folder |
 | `predict.py` | Classify a single video |
+| `explainability.py` | Generate final-layer attention maps and overlays for a video or the test set |
+| `monitor.py` | Monitor a video with overlapping windows and harassment alerts |
+| `monitor_live.py` | Monitor a webcam or video source in real time; facial emotion is context only |
+| `monitor_multimodal.py` | Analyse a video with harassment scores and facial-emotion context |
+| `plot_monitor_log.py` | Plot a saved monitoring log |
 | `plot_results.py` | Comparison table, curves, confusion matrices |
 | `baselines.py` | CNN-LSTM / CNN-BiGRU / 3D-ResNet code (written but **not run or evaluated**) |
 | `run_all.ps1` | Runs the two-model training |
@@ -71,6 +76,45 @@ python train_transformers.py --model videomae --epochs 4 --freeze_blocks 8
 python plot_results.py
 python evaluate_saved.py --model timesformer
 python predict.py --video clip.mp4 --model timesformer
+python explainability.py --video clip.mp4 --model both
 ```
 Use a GPU (add `--fp16`) for the full 20-epoch setting. Trained weights are not
 stored in the repo because of their size.
+
+### Live camera monitoring
+
+Run the live monitor from this folder to use the default camera:
+
+```powershell
+python monitor_live.py --source 0
+```
+
+Press `q` to stop. The monitor reports the video model's harassment probability
+and may raise a threshold-based alert; it is a prototype for human review, not
+a validated real-world safety decision system. Facial-emotion estimates are
+shown only as context and do not determine alerts. On a CPU, analysis may lag
+behind the live video.
+
+### Attention visualizations
+
+`explainability.py` loads the existing checkpoints from
+`outputs/<model>/best_model`; it does not retrain or modify them. It uses the
+same deterministic frame sampling, 224x224 resize, and processor
+normalization as `predict.py`. The script saves original sampled frames,
+attention heatmaps, overlays, a per-model montage, and a JSON summary under
+`outputs/explainability/<model>/<video-name>/`. When both models are run, a
+top-frame comparison is also saved under `outputs/explainability/comparisons/`.
+
+```powershell
+python explainability.py --video "path\to\clip.mp4" --model timesformer
+python explainability.py --video "path\to\clip.mp4" --model videomae --no-display
+python explainability.py --all-test --model both --no-display
+```
+
+TimeSformer visualizations use final-layer spatial CLS-to-patch attention and
+temporal attention for frame scores. VideoMAE visualizations use final-layer
+eager attention, grouped by its two-frame tubelets (the same map is shown for
+both frames in each tubelet). These attention maps show model token
+interactions; they are not causal explanations and do not establish why a
+prediction was made. Running `--all-test` performs inference on every test
+clip and may take a long time, especially on CPU.
